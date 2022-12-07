@@ -41,6 +41,9 @@ VERILATOR_FLAGS += --coverage
 #VERILATOR_FLAGS += --gdbbt
 # Include directories for Verilator
 VERILATOR_FLAGS += -y src
+# Import SDL2
+VERILATOR_FLAGS += -CFLAGS "$(shell sdl2-config --cflags)"
+VERILATOR_FLAGS += -LDFLAGS "$(shell sdl2-config --libs)"
 
 # Input files for Verilator
 VERILATOR_INPUT = src/top.v src_sim/main.cpp
@@ -68,7 +71,7 @@ build:
 # 2. Or, run the make rules Verilator does:
 	$(MAKE) -j -C obj_dir -f Vtop.mk
 # 3. Or, call a submakefile where we can override the rules ourselves:
-#	$(MAKE) -j -C obj_dir -f ../obj.mk
+	# $(MAKE) -j -C obj_dir -f ../obj.mk
 
 run:
 	@echo
