@@ -40,10 +40,7 @@ VERILATOR_FLAGS += --coverage
 # Add this trace to get a backtrace in gdb
 #VERILATOR_FLAGS += --gdbbt
 # Include directories for Verilator
-VERILATOR_FLAGS += -y src_hw/shell
-VERILATOR_FLAGS += -y src_hw/core
-VERILATOR_FLAGS += -y src_hw/include
-VERILATOR_FLAGS += -y src_tb
+VERILATOR_FLAGS += -y src
 
 # Input files for Verilator
 VERILATOR_INPUT = src/top.v src_sim/main.cpp
