@@ -15,14 +15,58 @@ module top (
 
 wire pix_clk;
 
+wire [15:0] paint_x;
+wire [15:0] paint_y;
+
+wire raw_hsync;
+wire raw_vsync;
+wire raw_de;
+wire [7:0] raw_r;
+wire [7:0] raw_g;
+wire [7:0] raw_b;
+
 // TODO: generate pixel clk
+// for simulation
+assign pix_clk = clk_in;
+// TODO: for FPGA
+
 
 // TODO: button logic
 
 // TODO: gaming logic
 
-// TODO: scanning logic
+// scanning logic
+vga_scan u_vga_scan(
+    .pix_clk    (pix_clk),
+    .pix_rstn   (resetn),
+    .sx         (paint_x),
+    .sy         (paint_y),
+    .hsync      (raw_hsync),
+    .vsync      (raw_vsync),
+    .de         (raw_de)
+);
 
 // TODO: graphic logic
+graphic u_graphic(
+    .pix_clk    (pix_clk),
+    .pix_rstn   (resetn),
+    .sx         (paint_x),
+    .sy         (paint_y),
+    .paint_r    (raw_r),
+    .paint_g    (raw_g),
+    .paint_b    (raw_b)
+);
+
+
+// output ff
+always @ (posedge pix_clk) begin
+    vga_hsync <= raw_hsync;
+    vga_vsync <= raw_vsync;
+    vga_de <= raw_de;
+    vga_r <= raw_de ? raw_r[7-:5] : 0;
+    vga_g <= raw_de ? raw_g[7-:6] : 0;
+    vga_b <= raw_de ? raw_b[7-:5] : 0;
+end
+assign vga_clk = pix_clk;
 
 endmodule
