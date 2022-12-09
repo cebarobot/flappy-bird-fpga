@@ -52,6 +52,7 @@ graphic u_graphic(
     .pix_rstn   (resetn),
     .sx         (paint_x),
     .sy         (paint_y),
+    .button     (button),
     .paint_r    (raw_r),
     .paint_g    (raw_g),
     .paint_b    (raw_b)

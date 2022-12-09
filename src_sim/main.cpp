@@ -18,6 +18,8 @@ uint16_t* frame_pixels = NULL;
 
 const int h_res = 480;
 const int v_res = 800;
+// const int h_res = 800;
+// const int v_res = 480;
 
 void verilator_init(int argc, char** argv) {
     Verilated::mkdir("logs");
@@ -62,6 +64,7 @@ void sdl_init() {
     }
 
     sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 
+        // SDL_RENDERER_SOFTWARE);
         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!sdl_renderer) {
         std::cerr << "Renderer creation failed: " << SDL_GetError() << std::endl;
@@ -86,7 +89,27 @@ void sdl_exit() {
     delete frame_pixels;
 }
 
-void sdl_update() {
+int sdl_handle_event() {
+    SDL_Event ev;
+    if (SDL_PollEvent(&ev)) {
+        if (ev.type == SDL_QUIT) {
+            return -1;
+        }
+         else if (ev.type == SDL_WINDOWEVENT) {
+            if (ev.window.event == SDL_WINDOWEVENT_CLOSE) {
+                return -1;
+            }
+        }
+         else if (ev.type == SDL_MOUSEBUTTONDOWN) {
+            top->button = 1;
+        } else if (ev.type == SDL_MOUSEBUTTONUP) {
+            top->button = 0;
+        }
+    }
+    return 0;
+}
+
+int sdl_update() {
     static int cur_x = 0;
     static int cur_y = 0;
     static int last_hsync = 0;
@@ -108,18 +131,25 @@ void sdl_update() {
         cur_x = 0;
         cur_y += 1;
     }
+
     if (last_vsync && !top->vga_vsync) {
         cur_x = 0;
         cur_y = 0;
 
         SDL_UpdateTexture(sdl_texture, NULL, frame_pixels, h_res * sizeof(uint16_t));
-        SDL_RenderClear(sdl_renderer);
+        // SDL_RenderClear(sdl_renderer);
         SDL_RenderCopy(sdl_renderer, sdl_texture, NULL, NULL);
         SDL_RenderPresent(sdl_renderer);
+
+        if (sdl_handle_event()) {
+            return -1;
+        }
     }
 
     last_hsync = top->vga_hsync;
     last_vsync = top->vga_vsync;
+
+    return 0;
 }
 
 int main(int argc, char** argv, char** env) {
@@ -156,7 +186,9 @@ int main(int argc, char** argv, char** env) {
         #endif
 
         if (!top->clk_in) {
-            sdl_update();
+            if (sdl_update()) {
+                break;
+            }
         }
     }
     
