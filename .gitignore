@@ -1,2 +1,5 @@
 obj_dir/
 logs/
+impl/**
+!impl/project_process_config.json
+flappy-bird-fpga.gprj.user
