@@ -34,27 +34,35 @@ for x in range(width):
         dest_img.append(this_index)
 
 # Generate hex image output for mem
-mem_output = ["%X\n" % d for d in dest_img]
+img_mem = ["%X\n" % d for d in dest_img]
 with open(base_name + '.mem', 'w') as f:
-    f.writelines(mem_output)
+    f.writelines(img_mem)
 
 # Generate hex image output for mi
-mi_header = []
-mi_header.append("#File_format=Hex\n")
-mi_header.append("#Address_depth=%d\n" % len(dest_img))
-mi_header.append("#Data_width=4\n")
+img_mi_header = []
+img_mi_header.append("#File_format=Hex\n")
+img_mi_header.append("#Address_depth=%d\n" % len(dest_img))
+img_mi_header.append("#Data_width=4\n")
 with open(base_name + '.mi', 'w') as f:
-    f.writelines(mi_header)
-    f.writelines(mem_output)
+    f.writelines(img_mi_header)
+    f.writelines(img_mem)
 
 # Gererate hex color palette
-palette_output = []
+palette_mem = []
 for one_color in color_palette:
     color_r5 = one_color[0] >> 3
     color_g6 = one_color[1] >> 2
     color_b5 = one_color[2] >> 3
     color_rgb565 = (color_r5 << 11) + (color_g6 << 5) + color_b5
-    palette_output.append("%4X\n" % color_rgb565)
+    palette_mem.append("%4X\n" % color_rgb565)
 
 with open(base_name + '_palette.mem', 'w') as f:
-    f.writelines(palette_output)
+    f.writelines(palette_mem)
+
+palette_mi_header = []
+palette_mi_header.append("#File_format=Hex\n")
+palette_mi_header.append("#Address_depth=%d\n" % len(color_palette))
+palette_mi_header.append("#Data_width=16\n")
+with open(base_name + '_palette.mi', 'w') as f:
+    f.writelines(palette_mi_header)
+    f.writelines(palette_mem)
