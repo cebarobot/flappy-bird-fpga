@@ -8,9 +8,7 @@ module top (
     output reg vga_hsync,       // VGA horizontal sync
     output reg vga_vsync,       // VGA vertical sync
     output reg vga_de,          // VGA data enable
-    output reg [4:0] vga_r,     // VGA 5-bit red
-    output reg [5:0] vga_g,     // VGA 6-bit green
-    output reg [4:0] vga_b      // VGA 5-bit blue
+    output reg [15:0] vga_rgb   // VGA RGB565
 );
 
 wire pix_clk;
@@ -58,9 +56,7 @@ always @ (posedge pix_clk) begin
     vga_hsync <= raw_hsync;
     vga_vsync <= raw_vsync;
     vga_de <= raw_de;
-    vga_r <= raw_de ? raw_color[15:11] : 0;
-    vga_g <= raw_de ? raw_color[10:5] : 0;
-    vga_b <= raw_de ? raw_color[4:0] : 0;
+    vga_rgb <= raw_de ? raw_color : 0;
 end
 assign vga_clk = pix_clk;
 

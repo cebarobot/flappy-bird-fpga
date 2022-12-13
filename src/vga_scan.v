@@ -32,17 +32,17 @@ module vga_scan (
     parameter V_BP  = 33;
 `endif
 
-parameter H_STA     = 0 - H_FP - H_PW - H_BP;
-parameter HS_STA    = H_STA + H_FP;
-parameter HS_END    = HS_STA + H_PW;
-parameter HA_STA    = 0;
-parameter HA_END    = H_W;
+parameter signed H_STA     = 0 - H_FP - H_PW - H_BP;
+parameter signed HS_STA    = H_STA + H_FP;
+parameter signed HS_END    = HS_STA + H_PW;
+parameter signed HA_STA    = 0;
+parameter signed HA_END    = H_W;
 
-parameter V_STA     = 0 - V_FP - V_PW - V_BP;
-parameter VS_STA    = V_STA + V_FP;
-parameter VS_END    = VS_STA + V_PW;
-parameter VA_STA    = 0;
-parameter VA_END    = V_H;
+parameter signed V_STA     = 0 - V_FP - V_PW - V_BP;
+parameter signed VS_STA    = V_STA + V_FP;
+parameter signed VS_END    = VS_STA + V_PW;
+parameter signed VA_STA    = 0;
+parameter signed VA_END    = V_H;
 
 reg signed [15:0] pos_x;
 reg signed [15:0] pos_y;
@@ -71,7 +71,7 @@ always @(posedge pix_clk) begin
         sy <= pos_y;
         hsync <= !(pos_x >= HS_STA && pos_x < HS_END);
         vsync <= !(pos_y >= VS_STA && pos_y < VS_END);
-        de <= (pos_x >= HA_STA && pos_x < HA_END && pos_y >= VA_STA && pos_y < VA_END);
+        de <= (pos_x >= HA_STA && pos_y >= VA_STA);
     end
 end
 
