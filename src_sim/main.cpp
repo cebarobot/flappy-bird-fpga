@@ -161,7 +161,7 @@ int main(int argc, char** argv, char** env) {
     sdl_init();
 
     top->clk_in = 0;
-    top->resetn = !0;
+    top->rstn = !0;
 
     // Simulate
     while (!context_p->gotFinish()) {
@@ -173,9 +173,9 @@ int main(int argc, char** argv, char** env) {
         
         // reset
         if (context_p->time() > 1 && context_p->time() < 8) {
-            top->resetn = !1;  // Assert reset
+            top->rstn = !1;  // Assert reset
         } else {
-            top->resetn = !0;  // Deassert reset
+            top->rstn = !0;  // Deassert reset
         }
 
         // Evaluate model

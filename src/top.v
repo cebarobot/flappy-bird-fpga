@@ -1,6 +1,6 @@
 module top (
     input  clk_in,              // clock in
-    input  resetn,              // reset signal
+    input  rstn,              // reset signal
 
     input  button,              // button input
 
@@ -38,7 +38,7 @@ assign pix_clk = clk_in;
 // scanning logic
 vga_scan u_vga_scan(
     .pix_clk    (pix_clk),
-    .pix_rstn   (resetn),
+    .pix_rstn   (rstn),
     .sx         (paint_x),
     .sy         (paint_y),
     .hsync      (raw_hsync),
@@ -49,7 +49,7 @@ vga_scan u_vga_scan(
 // TODO: graphic logic
 graphic u_graphic(
     .pix_clk    (pix_clk),
-    .pix_rstn   (resetn),
+    .pix_rstn   (rstn),
     .sx         (paint_x),
     .sy         (paint_y),
     .button     (button),
