@@ -21,7 +21,7 @@ reg  signed [15:0] s1_sprite_yy;
 reg  s1_active;
 
 assign s1_sprite_x = paint_x + offset - pos_x;
-assign s1_sprite_y = paint_y + offset - pos_y;
+assign s1_sprite_y = paint_y - pos_y;
 always @(posedge clk) begin
     if (~rstn) begin
         s1_sprite_xx <= 0;
