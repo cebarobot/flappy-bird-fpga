@@ -1,12 +1,12 @@
 `include "config.vh"
 module vga_scan (
-    input  pix_clk,         // clock
-    input  pix_rstn,        // reset
-    output reg [15:0] sx,   // horizontal pixel
-    output reg [15:0] sy,   // vertical pixel
-    output hsync,           // horizontal sync
-    output vsync,           // vertical sync
-    output de               // data enable
+    input  pix_clk,                 // clock
+    input  pix_rstn,                // reset
+    output reg signed [15:0] sx,    // horizontal pixel
+    output reg signed [15:0] sy,    // vertical pixel
+    output reg hsync,               // horizontal sync
+    output reg vsync,               // vertical sync
+    output reg de                   // data enable
 );
 
 // timing parameters for different screen
@@ -32,29 +32,46 @@ module vga_scan (
     parameter V_BP  = 33;
 `endif
 
-parameter HA_END    = H_W;
-parameter HS_STA    = HA_END + H_FP;
+parameter H_STA     = 0 - H_FP - H_PW - H_BP;
+parameter HS_STA    = H_STA + H_FP;
 parameter HS_END    = HS_STA + H_PW;
-parameter LINE_END  = HS_END + H_BP;
+parameter HA_STA    = 0;
+parameter HA_END    = H_W;
 
-parameter VA_END    = V_H;
-parameter VS_STA    = VA_END + V_FP;
+parameter V_STA     = 0 - V_FP - V_PW - V_BP;
+parameter VS_STA    = V_STA + V_FP;
 parameter VS_END    = VS_STA + V_PW;
-parameter FRAME_END = VS_END + V_BP;
+parameter VA_STA    = 0;
+parameter VA_END    = V_H;
 
-assign hsync = !(sx >= HS_STA && sx < HS_END);
-assign vsync = !(sy >= VS_STA && sy < VS_END);
-assign de = (sx < HA_END && sy < VA_END);
+reg signed [15:0] pos_x;
+reg signed [15:0] pos_y;
+
+always @(posedge pix_clk) begin
+    if (~pix_rstn) begin
+        pos_x <= 0;
+        pos_y <= 0;
+    end else if (pos_x == HA_END - 1) begin
+        pos_x <= H_STA;
+        pos_y <= (pos_y == VA_END - 1)? V_STA : pos_y + 1;
+    end else begin
+        pos_x <= pos_x + 1;
+    end
+end
 
 always @(posedge pix_clk) begin
     if (~pix_rstn) begin
         sx <= 0;
         sy <= 0;
-    end else if (sx == LINE_END - 1) begin
-        sx <= 0;
-        sy <= (sy == FRAME_END - 1)? 0 : sy + 1;
+        hsync <= 0;
+        vsync <= 0;
+        de <= 0;
     end else begin
-        sx <= sx + 1;
+        sx <= pos_x;
+        sy <= pos_y;
+        hsync <= !(pos_x >= HS_STA && pos_x < HS_END);
+        vsync <= !(pos_y >= VS_STA && pos_y < VS_END);
+        de <= (pos_x >= HA_STA && pos_x < HA_END && pos_y >= VA_STA && pos_y < VA_END);
     end
 end
 

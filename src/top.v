@@ -21,9 +21,7 @@ wire [15:0] paint_y;
 wire raw_hsync;
 wire raw_vsync;
 wire raw_de;
-wire [7:0] raw_r;
-wire [7:0] raw_g;
-wire [7:0] raw_b;
+wire [15:0] raw_color;
 
 // TODO: generate pixel clk
 // for simulation
@@ -47,26 +45,22 @@ vga_scan u_vga_scan(
 );
 
 // TODO: graphic logic
-graphic u_graphic(
-    .pix_clk    (pix_clk),
-    .pix_rstn   (rstn),
-    .sx         (paint_x),
-    .sy         (paint_y),
-    .button     (button),
-    .paint_r    (raw_r),
-    .paint_g    (raw_g),
-    .paint_b    (raw_b)
+dis_background u_dis_background(
+    .clk        (pix_clk),
+    .rstn       (rstn),
+    .paint_x    (paint_x),
+    .paint_y    (paint_y),
+    .paint_color(raw_color)
 );
-
 
 // output ff
 always @ (posedge pix_clk) begin
     vga_hsync <= raw_hsync;
     vga_vsync <= raw_vsync;
     vga_de <= raw_de;
-    vga_r <= raw_de ? raw_r[7-:5] : 0;
-    vga_g <= raw_de ? raw_g[7-:6] : 0;
-    vga_b <= raw_de ? raw_b[7-:5] : 0;
+    vga_r <= raw_de ? raw_color[15:11] : 0;
+    vga_g <= raw_de ? raw_color[10:5] : 0;
+    vga_b <= raw_de ? raw_color[4:0] : 0;
 end
 assign vga_clk = pix_clk;
 
