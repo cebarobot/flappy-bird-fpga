@@ -39,13 +39,13 @@ with open(base_name + '.mem', 'w') as f:
     f.writelines(img_mem)
 
 # Generate hex image output for mi
-img_mi_header = []
-img_mi_header.append("#File_format=Hex\n")
-img_mi_header.append("#Address_depth=%d\n" % len(dest_img))
-img_mi_header.append("#Data_width=4\n")
-with open(base_name + '.mi', 'w') as f:
-    f.writelines(img_mi_header)
-    f.writelines(img_mem)
+# img_mi_header = []
+# img_mi_header.append("#File_format=Hex\n")
+# img_mi_header.append("#Address_depth=%d\n" % len(dest_img))
+# img_mi_header.append("#Data_width=4\n")
+# with open(base_name + '.mi', 'w') as f:
+#     f.writelines(img_mi_header)
+#     f.writelines(img_mem)
 
 # Gererate hex color palette
 palette_mem = []
@@ -59,10 +59,11 @@ for one_color in color_palette:
 with open(base_name + '_palette.mem', 'w') as f:
     f.writelines(palette_mem)
 
-palette_mi_header = []
-palette_mi_header.append("#File_format=Hex\n")
-palette_mi_header.append("#Address_depth=%d\n" % len(color_palette))
-palette_mi_header.append("#Data_width=16\n")
-with open(base_name + '_palette.mi', 'w') as f:
-    f.writelines(palette_mi_header)
-    f.writelines(palette_mem)
+# Generate hex color palette for mi
+# palette_mi_header = []
+# palette_mi_header.append("#File_format=Hex\n")
+# palette_mi_header.append("#Address_depth=%d\n" % len(color_palette))
+# palette_mi_header.append("#Data_width=16\n")
+# with open(base_name + '_palette.mi', 'w') as f:
+#     f.writelines(palette_mi_header)
+#     f.writelines(palette_mem)

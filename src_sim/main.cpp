@@ -6,6 +6,8 @@
 #include <verilated_vcd_c.h>
 #include "Vtop.h"
 
+// #define TRACE_WAVE
+
 VerilatedContext * context_p = NULL;
 Vtop * top = NULL;
 VerilatedVcdC * trace_p = NULL;
