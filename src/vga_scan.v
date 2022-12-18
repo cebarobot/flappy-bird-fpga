@@ -6,20 +6,22 @@ module vga_scan (
     output reg signed [15:0] sy,    // vertical pixel
     output reg hsync,               // horizontal sync
     output reg vsync,               // vertical sync
-    output reg de                   // data enable
+    output reg de,                  // data enable
+    output reg new_line,            // new line
+    output reg new_frame            // new frame
 );
 
 // timing parameters for different screen
 `ifdef LCD_5INCH
     parameter H_W   = 800;
-    parameter H_FP  = 210;
-    parameter H_PW  = 1;
-    parameter H_BP  = 182;
+    parameter H_FP  = 200;
+    parameter H_PW  = 10;
+    parameter H_BP  = 46;
 
     parameter V_H   = 480;
-    parameter V_FP  = 62;
-    parameter V_PW  = 5;
-    parameter V_BP  = 6;
+    parameter V_FP  = 12;
+    parameter V_PW  = 10;
+    parameter V_BP  = 23;
 `elsif VGA_640_480
     parameter H_W   = 640;
     parameter H_FP  = 16;
@@ -72,6 +74,8 @@ always @(posedge pix_clk) begin
         hsync <= !(pos_x >= HS_STA && pos_x < HS_END);
         vsync <= !(pos_y >= VS_STA && pos_y < VS_END);
         de <= (pos_x >= HA_STA && pos_y >= VA_STA);
+        new_line <= (pos_x == H_STA);
+        new_frame <= (pos_y == V_STA && pos_x == H_STA);
     end
 end
 

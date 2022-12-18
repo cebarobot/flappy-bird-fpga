@@ -21,6 +21,9 @@ wire raw_vsync;
 wire raw_de;
 wire [15:0] raw_color;
 
+wire new_line;
+wire new_frame;
+
 // TODO: generate pixel clk
 // for simulation
 assign pix_clk = clk_in;
@@ -39,7 +42,9 @@ vga_scan u_vga_scan(
     .sy         (paint_y),
     .hsync      (raw_hsync),
     .vsync      (raw_vsync),
-    .de         (raw_de)
+    .de         (raw_de),
+    .new_line   (new_line),
+    .new_frame  (new_frame)
 );
 
 // TODO: graphic logic
