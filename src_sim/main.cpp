@@ -116,20 +116,15 @@ int sdl_update() {
     static int last_vsync = 0;
 
     if (top->vga_de) {
-        uint16_t cur_pixel = (
-            (top->vga_r << 11) |
-            (top->vga_g << 5 ) |
-            (top->vga_b << 0 )
-        );
+        uint16_t cur_pixel = top->vga_rgb;
         if (cur_x < v_res && cur_y < h_res) {
             frame_pixels[cur_y + (v_res - cur_x - 1) * h_res] = cur_pixel;
         }
         cur_x += 1;
-    }
-
-    if (last_hsync && !top->vga_hsync) {
-        cur_x = 0;
-        cur_y += 1;
+        if (cur_x == v_res) {
+            cur_x = 0;
+            cur_y += 1;
+        }
     }
 
     if (last_vsync && !top->vga_vsync) {
