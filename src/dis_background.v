@@ -14,25 +14,25 @@ parameter pos_y = 0;
 parameter sprite_height = 40;
 parameter sprite_width = 120;
 
-wire signed [15:0] s1_sprite_x;
-wire signed [15:0] s1_sprite_y;
-reg  signed [15:0] s1_sprite_xx;
-reg  signed [15:0] s1_sprite_yy;
+wire signed [15:0] s1_x;
+wire signed [15:0] s1_y;
+reg  signed [15:0] s1_sprite_x;
+reg  signed [15:0] s1_sprite_y;
 reg  s1_active;
 
-assign s1_sprite_x = paint_x + offset - pos_x;
-assign s1_sprite_y = paint_y - pos_y;
+assign s1_x = paint_x + offset - pos_x;
+assign s1_y = paint_y - pos_y;
 always @(posedge clk) begin
     if (~rstn) begin
-        s1_sprite_xx <= 0;
-        s1_sprite_yy <= 0;
+        s1_sprite_x <= 0;
+        s1_sprite_y <= 0;
         s1_active <= 0;
     end else begin
-        s1_sprite_xx <= s1_sprite_x;
-        s1_sprite_yy <= s1_sprite_y;
+        s1_sprite_x <= s1_x;
+        s1_sprite_y <= s1_y;
         s1_active <= 
-            s1_sprite_x >= 0 && s1_sprite_x < sprite_height * 4 &&
-            s1_sprite_y >= 0 && s1_sprite_y < sprite_width * 4;
+            s1_x >= 0 && s1_x < sprite_height * 4 &&
+            s1_y >= 0 && s1_y < sprite_width * 4;
     end
 end
 
@@ -41,8 +41,8 @@ wire signed [15:0] s2_bitmap_y;
 reg  signed [15:0] s2_addr;
 reg  s2_active;
 
-assign s2_bitmap_x = s1_sprite_xx >> 2;
-assign s2_bitmap_y = s1_sprite_yy >> 2;
+assign s2_bitmap_x = s1_sprite_x >> 2;
+assign s2_bitmap_y = s1_sprite_y >> 2;
 always @(posedge clk) begin
     if (~rstn) begin
         s2_addr <= 0;
@@ -58,7 +58,7 @@ reg  s3_active;
 rom #(
     .WIDTH      (4),
     .DEPTH      (4800),
-    .INIT_FILE  ("scripts/background.mem")
+    .INIT_FILE  ("images/background.mem")
 ) rom_background_img (
     .clk        (clk),
     .rstn       (rstn),
@@ -78,7 +78,7 @@ reg  s4_active;
 rom #(
     .WIDTH      (16),
     .DEPTH      (9),
-    .INIT_FILE  ("scripts/background_palette.mem")
+    .INIT_FILE  ("images/background_palette.mem")
 ) rom_background_palette (
     .clk        (clk),
     .rstn       (rstn),

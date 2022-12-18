@@ -24,6 +24,12 @@ wire [15:0] raw_color;
 wire new_line;
 wire new_frame;
 
+wire [15:0] background_color;
+wire stage_pe;
+wire [15:0] stage_color;
+
+wire [7:0] stage_shift = 0;
+
 // TODO: generate pixel clk
 // for simulation
 assign pix_clk = clk_in;
@@ -49,12 +55,27 @@ vga_scan u_vga_scan(
 
 // TODO: graphic logic
 dis_background u_dis_background(
-    .clk        (pix_clk),
-    .rstn       (rstn),
-    .paint_x    (paint_x),
-    .paint_y    (paint_y),
-    .paint_color(raw_color)
+    .clk            (pix_clk),
+    .rstn           (rstn),
+    .paint_x        (paint_x),
+    .paint_y        (paint_y),
+    .paint_color    (background_color)
 );
+
+dis_stage u_dis_stage(
+    .clk            (pix_clk),
+    .rstn           (rstn),
+    .shift          (stage_shift),
+    .new_frame      (new_frame),
+    .paint_x        (paint_x),
+    .paint_y        (paint_y),
+    .paint_enable   (stage_pe),
+    .paint_color    (stage_color)
+);
+
+assign raw_color =
+    (stage_pe)? stage_color:
+    background_color;
 
 // output ff
 always @ (posedge pix_clk) begin
