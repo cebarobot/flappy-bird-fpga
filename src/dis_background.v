@@ -9,7 +9,7 @@ module dis_background(
 );
 
 localparam offset = 5;
-parameter pos_x = 192;
+parameter pos_x = 160;
 parameter pos_y = 0;
 parameter sprite_height = 40;
 parameter sprite_width = 120;
@@ -94,9 +94,9 @@ always @(posedge clk) begin
 end
 
 reg  [15:0] s5_color;
-wire is_sky     = paint_x + 1 >= 352;
-wire is_tree    = paint_x + 1 >= 160 && paint_x + 1 < 192;
-wire is_ground  = paint_x + 1 >= 0 && paint_x +1 < 160;
+wire is_sky     = paint_x + 1 >= 320;
+wire is_tree    = paint_x + 1 >= 128 && paint_x + 1 < 160;
+wire is_ground  = paint_x + 1 >= 0 && paint_x +1 < 128;
 always @(posedge clk) begin
     if (~rstn) begin
         s5_color <= 0;

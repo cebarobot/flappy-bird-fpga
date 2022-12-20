@@ -34,16 +34,16 @@ wire [15:0] bird_color;
 
 wire [7:0] stage_shift = 0;
 
-wire signed [15:0] pipe1_pos_x = 700;
+wire signed [15:0] pipe1_pos_x = 680;
 wire signed [15:0] pipe1_pos_y = -50;
 wire signed [15:0] pipe2_pos_x = 500;
 wire signed [15:0] pipe2_pos_y = 150;
-wire signed [15:0] pipe3_pos_x = 400;
+wire signed [15:0] pipe3_pos_x = 450;
 wire signed [15:0] pipe3_pos_y = 350;
 
 wire signed [15:0] bird_pos_x = 400;
 wire signed [15:0] bird_pos_y = 240;
-wire signed [ 7:0] bird_angle = 21;
+wire signed [ 7:0] bird_angle = 8'd10;
 wire [1:0] bird_status = 2'b00;
 
 // TODO: generate pixel clk

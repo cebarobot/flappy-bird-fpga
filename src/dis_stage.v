@@ -12,7 +12,7 @@ module dis_stage(
 );
 
 localparam offset = 4;
-parameter pos_x = 128;
+parameter pos_x = 96;
 parameter sprite_height = 8;
 parameter sprite_width = 120;
 
@@ -58,7 +58,7 @@ reg  signed [15:0] s3_addr;
 reg  s3_active;
 
 assign s3_bitmap_x = s4_sprite_x >> 2;
-assign s3_bitmap_y = (s4_counter + 16'(shift)) >> 2;
+assign s3_bitmap_y = (s4_counter + {8'b0, shift}) >> 2;
 always @(posedge clk) begin
     if (~rstn) begin
         s3_addr <= 0;

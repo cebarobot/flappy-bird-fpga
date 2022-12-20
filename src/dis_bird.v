@@ -30,11 +30,11 @@ always @(posedge clk) begin
     end
 end
 
-reg  signed [ 7:0] angle_abs;
+reg  signed [7:0] angle_abs;
 wire [ 7:0] sin_raw;
 wire [ 7:0] cos_raw;
-reg  signed [ 8:0] sin_res;
-reg  signed [ 8:0] cos_res;
+reg  signed [15:0] sin_res;
+reg  signed [15:0] cos_res;
 
 always @(posedge clk) begin
     if (~rstn) begin
@@ -42,9 +42,9 @@ always @(posedge clk) begin
         sin_res <= 0;
         cos_res <= 0;
     end else begin
-        angle_abs <= angle < 0 ? -angle : angle;
-        sin_res <= angle < 0 ? -{1'b0, sin_raw} : {1'b0, sin_raw};
-        cos_res <= {1'b0, cos_raw};
+        angle_abs <= angle < 0 ? -angle : - (- angle);  // I don't know why, but only this works
+        sin_res <= angle < 0 ? -{8'b0, sin_raw} : {8'b0, sin_raw};
+        cos_res <= {8'b0, cos_raw};
     end
 end
 rom #(

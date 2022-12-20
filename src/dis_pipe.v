@@ -17,13 +17,13 @@ module dis_pipe(
 );
 
 localparam offset = 4;
-parameter pos_x0 = 136;
+parameter pos_x0 = 128;
 
 parameter head_height1 = 12;
 parameter head_width1 = 26;
 parameter head_height2 = head_height1 * 4;
 parameter head_width2 = head_width1 * 4;
-parameter open_height = 128;
+parameter open_height = 208;
 
 wire signed [15:0] s1_x;
 wire signed [15:0] s1_x0;
