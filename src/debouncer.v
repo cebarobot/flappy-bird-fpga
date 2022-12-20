@@ -1,5 +1,5 @@
 module debouncer # (
-    parameter cnt_depth = 10485760
+    parameter cnt_depth = 104857
 ) (
     input  clk,
     input  resetn,

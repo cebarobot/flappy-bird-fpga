@@ -75,7 +75,7 @@ wire dead = 0;
 always @(posedge clk) begin
     if (~rstn) begin
         game_status <= 0;
-    end else begin
+    end else if (new_frame) begin
         game_status <= game_status_next;
     end
 end
