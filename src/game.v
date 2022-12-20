@@ -197,14 +197,14 @@ always @(posedge clk) begin
             bird_fly_pos_x <= 420;
             bird_fly_spd_x <= 0;
             bird_fly_angle <= 0;
-        end else if (game_fly) begin
-            if (button_flag) begin
+        end else if (game_fly || game_over) begin
+            if (game_fly && button_flag) begin
                 bird_fly_spd_x <= 13;
             end else begin
                 bird_fly_spd_x <= bird_fly_spd_x - gravity;
             end
 
-            if (button_flag) begin
+            if (game_fly && button_flag) begin
                 if (bird_fly_angle < 0) begin
                     bird_fly_angle <= 0;
                 end
