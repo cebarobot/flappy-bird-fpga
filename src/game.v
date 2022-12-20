@@ -40,8 +40,11 @@ parameter front_speed = 5;
 parameter bird_fly_pos_y = 100;
 parameter gravity = 1;
 
-parameter new_pipe_pos_x = 500;
+parameter new_pipe_pos_x0 = 420;
+// parameter new_pipe_pos_x = 500;
 parameter new_pipe_pos_y = 480;
+
+wire signed [15:0] new_pipe_pos_x;
 
 parameter START = 0;
 parameter READY = 1;
@@ -228,6 +231,15 @@ always @(posedge clk) begin
         end
     end
 end
+
+wire [7:0] random;
+random u_random(
+    .clk    (clk),
+    .rstn   (rstn),
+    .random (random)
+);
+
+assign new_pipe_pos_x = new_pipe_pos_x0 + {8'd0, random};
 
 reg [15:0] pipe_count;
 wire new_pipe;
