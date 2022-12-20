@@ -83,6 +83,22 @@ wire game_ready;
 wire game_fly;
 wire game_over;
 
+reg  [7:0] game_over_shake_count;
+wire game_over_shake_after;
+
+always @(posedge clk) begin
+    if (~rstn) begin
+        game_over_shake_count <= 0;
+    end else if (game_over) begin
+        if (new_frame && game_over_shake_count != 60) begin
+            game_over_shake_count <= game_over_shake_count + 1;
+        end
+    end else begin
+        game_over_shake_count <= 0;
+    end
+end
+assign game_over_shake_after = game_over_shake_count == 60;
+
 wire bird_dead;
 
 always @(posedge clk) begin
@@ -120,7 +136,7 @@ always @(*) begin
             game_status_next[FLY] = 1;
         end
     end else if (game_over) begin
-        if (button_flag) begin
+        if (button_flag && game_over_shake_after) begin
             game_status_next[START] = 1;
         end else begin
             game_status_next[OVER] = 1;
