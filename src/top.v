@@ -27,10 +27,19 @@ wire new_frame;
 wire [15:0] background_color;
 wire stage_pe;
 wire [15:0] stage_color;
+wire pipe_pe;
+wire [15:0] pipe_color;
 wire bird_pe;
 wire [15:0] bird_color;
 
 wire [7:0] stage_shift = 0;
+
+wire signed [15:0] pipe1_pos_x = 700;
+wire signed [15:0] pipe1_pos_y = -50;
+wire signed [15:0] pipe2_pos_x = 500;
+wire signed [15:0] pipe2_pos_y = 150;
+wire signed [15:0] pipe3_pos_x = 400;
+wire signed [15:0] pipe3_pos_y = 350;
 
 wire signed [15:0] bird_pos_x = 400;
 wire signed [15:0] bird_pos_y = 240;
@@ -80,6 +89,21 @@ dis_stage u_dis_stage(
     .paint_color    (stage_color)
 );
 
+dis_pipe u_dis_pipe(
+    .clk            (pix_clk),
+    .rstn           (rstn),
+    .pos_x1         (pipe1_pos_x),
+    .pos_y1         (pipe1_pos_y),
+    .pos_x2         (pipe2_pos_x),
+    .pos_y2         (pipe2_pos_y),
+    .pos_x3         (pipe3_pos_x),
+    .pos_y3         (pipe3_pos_y),
+    .paint_x        (paint_x),
+    .paint_y        (paint_y),
+    .paint_enable   (pipe_pe),
+    .paint_color    (pipe_color)
+);
+
 dis_bird u_dis_bird(
     .clk            (pix_clk),
     .rstn           (rstn),
@@ -95,6 +119,7 @@ dis_bird u_dis_bird(
 
 assign raw_color =
     (bird_pe)?  bird_color:
+    (pipe_pe)?  pipe_color:
     (stage_pe)? stage_color:
     background_color;
 
