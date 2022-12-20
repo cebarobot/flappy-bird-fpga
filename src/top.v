@@ -1,6 +1,6 @@
 module top (
     input  clk_in,              // clock in
-    input  rstn,              // reset signal
+    input  rstn,                // reset signal
 
     input  button,              // button input
 
@@ -12,6 +12,8 @@ module top (
 );
 
 wire pix_clk;
+
+wire button_pulse;
 
 wire [15:0] paint_x;
 wire [15:0] paint_y;
@@ -32,19 +34,19 @@ wire [15:0] pipe_color;
 wire bird_pe;
 wire [15:0] bird_color;
 
-wire [7:0] stage_shift = 0;
+wire [7:0] stage_shift;
 
-wire signed [15:0] pipe1_pos_x = 680;
-wire signed [15:0] pipe1_pos_y = -50;
-wire signed [15:0] pipe2_pos_x = 500;
-wire signed [15:0] pipe2_pos_y = 150;
-wire signed [15:0] pipe3_pos_x = 450;
-wire signed [15:0] pipe3_pos_y = 350;
+wire signed [15:0] pipe1_pos_x;
+wire signed [15:0] pipe1_pos_y;
+wire signed [15:0] pipe2_pos_x;
+wire signed [15:0] pipe2_pos_y;
+wire signed [15:0] pipe3_pos_x;
+wire signed [15:0] pipe3_pos_y;
 
-wire signed [15:0] bird_pos_x = 400;
-wire signed [15:0] bird_pos_y = 240;
-wire signed [ 7:0] bird_angle = 8'd10;
-wire [1:0] bird_status = 2'b00;
+wire signed [15:0] bird_pos_x;
+wire signed [15:0] bird_pos_y;
+wire signed [ 7:0] bird_angle;
+wire [1:0] bird_status;
 
 // TODO: generate pixel clk
 // for simulation
@@ -52,9 +54,32 @@ assign pix_clk = clk_in;
 // TODO: for FPGA
 
 
-// TODO: button logic
+// button logic
+button_pulse u_button_pulse(
+    .clk    (pix_clk),
+    .resetn (rstn),
+    .btn    (button),
+    .pulse  (button_pulse)
+);
 
 // TODO: gaming logic
+game u_game(
+    .clk            (pix_clk),
+    .rstn           (rstn),
+    .button_pulse   (button_pulse),
+    .new_frame      (new_frame),
+    .stage_shift    (stage_shift),
+    .bird_status    (bird_status),
+    .pipe1_pos_x    (pipe1_pos_x),
+    .pipe1_pos_y    (pipe1_pos_y),
+    .pipe2_pos_x    (pipe2_pos_x),
+    .pipe2_pos_y    (pipe2_pos_y),
+    .pipe3_pos_x    (pipe3_pos_x),
+    .pipe3_pos_y    (pipe3_pos_y),
+    .bird_pos_x     (bird_pos_x),
+    .bird_pos_y     (bird_pos_y),
+    .bird_angle     (bird_angle)
+);
 
 // scanning logic
 vga_scan u_vga_scan(
