@@ -34,7 +34,7 @@ wire [15:0] pipe_color;
 wire bird_pe;
 wire [15:0] bird_color;
 
-wire [7:0] stage_shift;
+wire [15:0] stage_shift;
 
 wire signed [15:0] pipe1_pos_x;
 wire signed [15:0] pipe1_pos_y;

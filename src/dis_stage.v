@@ -2,7 +2,7 @@ module dis_stage(
     input  clk,
     input  rstn,
 
-    input signed [ 7:0] shift,
+    input [15:0] shift,
 
     input new_frame,
     input signed [15:0] paint_x, 
@@ -19,7 +19,7 @@ parameter sprite_width = 120;
 wire signed [15:0] s4_x;
 reg  signed [15:0] s4_sprite_x;
 wire signed [15:0] s4_y;
-reg  signed [15:0] s4_counter;
+reg  [15:0] s4_counter;
 wire s4_do_count;
 reg  s4_active;
 
@@ -58,7 +58,7 @@ reg  signed [15:0] s3_addr;
 reg  s3_active;
 
 assign s3_bitmap_x = s4_sprite_x >> 2;
-assign s3_bitmap_y = (s4_counter + {8'b0, shift}) >> 2;
+assign s3_bitmap_y = (shift + s4_counter) >> 2;
 always @(posedge clk) begin
     if (~rstn) begin
         s3_addr <= 0;
@@ -73,7 +73,7 @@ wire [3:0] s2_index;
 reg  s2_active;
 rom #(
     .WIDTH      (4),
-    .DEPTH      (112),
+    .DEPTH      (120),
     .INIT_FILE  ("images/stage.mem")
 ) rom_background_img (
     .clk        (clk),

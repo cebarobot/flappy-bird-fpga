@@ -5,7 +5,7 @@ module game(
     input   button_pulse,
     input   new_frame,
 
-    output reg [7:0] stage_shift,
+    output reg signed [15:0] stage_shift,
 
     output reg [1:0] bird_status,
 
@@ -22,7 +22,7 @@ module game(
 );
 
 always @(*) begin
-    stage_shift = 0;
+    // stage_shift = 13;
 
     pipe1_pos_x = 680;
     pipe1_pos_y = -50;
@@ -36,7 +36,7 @@ always @(*) begin
     // bird_angle = 8'd10;
 end
 
-parameter speed = 5;
+parameter front_speed = 5;
 
 parameter START = 0;
 parameter READY = 1;
@@ -124,7 +124,7 @@ always @(posedge clk) begin
         flap_count1 <= 0;
         flap_count2 <= 0;
         bird_status <= 0;
-    end if (new_frame) begin
+    end if (new_frame2) begin
         flap_count1 <= (flap_count1 == 5)? 0 : flap_count1 + 1;
         if (flap_count1 == 5) begin 
             flap_count2 <= (flap_count2 == 3)? 0 : flap_count2 + 1;
@@ -143,22 +143,34 @@ end
 
 always @(posedge clk) begin
     if (~rstn) begin
+        stage_shift <= 0;
+    end else if (new_frame2 && !game_over) begin
+        if (stage_shift + front_speed > 27) begin
+            stage_shift <= stage_shift + front_speed - 28;
+        end else begin
+            stage_shift <= stage_shift + front_speed;
+        end
+    end
+end
+
+always @(posedge clk) begin
+    if (~rstn) begin
         bird_pos_x <= 0;
         bird_pos_y <= 0;
         bird_angle <= 0;
     end else if (new_frame2) begin
         if (game_start) begin
-            bird_pos_x <= 600;
+            bird_pos_x <= 580;
             bird_pos_y <= 380;
             bird_angle <= 0;
         end else if (game_ready) begin
-            bird_pos_x <= 400;
+            bird_pos_x <= 420;
             bird_pos_y <= 100;
-            bird_angle <= 0;
+            bird_angle <= 20;
         end else begin
             bird_pos_x <= 128;
             bird_pos_y <= 100;
-            bird_angle <= -64;
+            bird_angle <= -60;
         end
     end
 end
