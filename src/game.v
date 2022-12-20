@@ -45,8 +45,10 @@ parameter READY = 1;
 parameter FLY   = 2;
 parameter OVER  = 3;
 
-reg signed [15:0] bird_fly_pos_x;
-reg signed [15:0] bird_fly_spd_x;
+reg  signed [15:0] bird_fly_pos_x;
+reg  signed [15:0] bird_fly_spd_x;
+reg  signed [ 7:0] bird_fly_angle;
+wire signed [ 7:0] bird_fly_angle_spd;
 
 reg  new_frame2;
 always @(posedge clk) begin
@@ -175,24 +177,40 @@ always @(posedge clk) begin
         end else begin
             bird_pos_x <= bird_fly_pos_x;
             bird_pos_y <= bird_fly_pos_y;
-            bird_angle <= 0;
+            bird_angle <= bird_fly_angle;
         end
     end
 end
+
+assign bird_fly_angle_spd = (bird_fly_spd_x >> 3) * 3;
 
 always @(posedge clk) begin
     if (~rstn) begin
         bird_fly_pos_x <= 0;
         bird_fly_spd_x <= 0;
+        bird_fly_angle <= 0;
     end else if (new_frame2) begin
         if (game_ready) begin
             bird_fly_pos_x <= 420;
             bird_fly_spd_x <= 0;
+            bird_fly_angle <= 0;
         end else if (game_fly) begin
             if (button_flag) begin
                 bird_fly_spd_x <= 13;
             end else begin
                 bird_fly_spd_x <= bird_fly_spd_x - gravity;
+            end
+
+            if (button_flag) begin
+                if (bird_fly_angle < 0) begin
+                    bird_fly_angle <= 0;
+                end
+            end else if (bird_fly_angle + bird_fly_angle_spd > 20) begin
+                bird_fly_angle <= 20;
+            end else if (bird_fly_angle + bird_fly_angle_spd < -60) begin
+                bird_fly_angle <= -60;
+            end else begin
+                bird_fly_angle <= bird_fly_angle + bird_fly_angle_spd;
             end
 
             if (bird_fly_pos_x + bird_fly_spd_x > 728) begin
