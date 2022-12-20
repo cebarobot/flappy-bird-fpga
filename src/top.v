@@ -27,8 +27,15 @@ wire new_frame;
 wire [15:0] background_color;
 wire stage_pe;
 wire [15:0] stage_color;
+wire bird_pe;
+wire [15:0] bird_color;
 
 wire [7:0] stage_shift = 0;
+
+wire signed [15:0] bird_pos_x = 400;
+wire signed [15:0] bird_pos_y = 240;
+wire signed [ 7:0] bird_angle = 21;
+wire [1:0] bird_status = 2'b00;
 
 // TODO: generate pixel clk
 // for simulation
@@ -73,7 +80,21 @@ dis_stage u_dis_stage(
     .paint_color    (stage_color)
 );
 
+dis_bird u_dis_bird(
+    .clk            (pix_clk),
+    .rstn           (rstn),
+    .pos_x          (bird_pos_x),
+    .pos_y          (bird_pos_y),
+    .angle          (bird_angle),
+    .bird_status    (bird_status),
+    .paint_x        (paint_x),
+    .paint_y        (paint_y),
+    .paint_enable   (bird_pe),
+    .paint_color    (bird_color)
+);
+
 assign raw_color =
+    (bird_pe)?  bird_color:
     (stage_pe)? stage_color:
     background_color;
 
