@@ -24,12 +24,12 @@ module game(
 always @(*) begin
     // stage_shift = 13;
 
-    pipe1_pos_x = 680;
-    pipe1_pos_y = -50;
-    pipe2_pos_x = 500;
-    pipe2_pos_y = 150;
-    pipe3_pos_x = 450;
-    pipe3_pos_y = 350;
+    // pipe1_pos_x = 680;
+    // pipe1_pos_y = -50;
+    // pipe2_pos_x = 500;
+    // pipe2_pos_y = 150;
+    // pipe3_pos_x = 450;
+    // pipe3_pos_y = 350;
 
     // bird_pos_x = 400;
     // bird_pos_y = 240;
@@ -39,6 +39,9 @@ end
 parameter front_speed = 5;
 parameter bird_fly_pos_y = 100;
 parameter gravity = 1;
+
+parameter new_pipe_pos_x = 500;
+parameter new_pipe_pos_y = 480;
 
 parameter START = 0;
 parameter READY = 1;
@@ -173,7 +176,7 @@ always @(posedge clk) begin
         end else if (game_ready) begin
             bird_pos_x <= 420;
             bird_pos_y <= 100;
-            bird_angle <= 20;
+            bird_angle <= 0;
         end else begin
             bird_pos_x <= bird_fly_pos_x;
             bird_pos_y <= bird_fly_pos_y;
@@ -221,6 +224,54 @@ always @(posedge clk) begin
             end else begin
                 bird_fly_pos_x <= bird_fly_pos_x + bird_fly_spd_x;
             end
+        end
+    end
+end
+
+reg [15:0] pipe_count;
+wire new_pipe;
+assign new_pipe = pipe_count == 0;
+always @(posedge clk) begin
+    if (~rstn) begin
+        pipe_count <= 0;
+    end else if (new_frame) begin
+        if (pipe_count == 63) begin
+            pipe_count <= 0;
+        end else begin
+            pipe_count <= pipe_count + 1;
+        end
+    end
+end
+
+always @(posedge clk) begin
+    if (~rstn) begin
+        pipe1_pos_x <= 0;
+        pipe1_pos_y <= 0;
+        pipe2_pos_x <= 0;
+        pipe2_pos_y <= 0;
+        pipe3_pos_x <= 0;
+        pipe3_pos_y <= 0;
+    end if (new_frame2) begin
+        if (game_fly) begin
+            if (new_pipe) begin
+                pipe1_pos_x <= pipe2_pos_x;
+                pipe1_pos_y <= pipe2_pos_y - front_speed;
+                pipe2_pos_x <= pipe3_pos_x;
+                pipe2_pos_y <= pipe3_pos_y - front_speed;
+                pipe3_pos_x <= new_pipe_pos_x;
+                pipe3_pos_y <= new_pipe_pos_y;
+            end else begin
+                pipe1_pos_y <= pipe1_pos_y - front_speed;
+                pipe2_pos_y <= pipe2_pos_y - front_speed;
+                pipe3_pos_y <= pipe3_pos_y - front_speed;
+            end
+        end else if (!game_over) begin
+            pipe1_pos_x <= 680;
+            pipe2_pos_x <= 500;
+            pipe3_pos_x <= 450;
+            pipe1_pos_y <= -120;
+            pipe2_pos_y <= -120;
+            pipe3_pos_y <= -120;
         end
     end
 end
