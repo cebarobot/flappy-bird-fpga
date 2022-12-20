@@ -37,11 +37,16 @@ always @(*) begin
 end
 
 parameter front_speed = 5;
+parameter bird_fly_pos_y = 100;
+parameter gravity = 1;
 
 parameter START = 0;
 parameter READY = 1;
 parameter FLY   = 2;
 parameter OVER  = 3;
+
+reg signed [15:0] bird_fly_pos_x;
+reg signed [15:0] bird_fly_spd_x;
 
 reg  new_frame2;
 always @(posedge clk) begin
@@ -100,8 +105,8 @@ always @(*) begin
             game_status_next[READY] = 1;
         end
     end else if (game_fly) begin
-        if (button_flag) begin
-        // if (dead) begin
+        // if (button_flag) begin
+        if (dead) begin
             game_status_next[OVER] = 1;
         end else begin
             game_status_next[FLY] = 1;
@@ -168,9 +173,36 @@ always @(posedge clk) begin
             bird_pos_y <= 100;
             bird_angle <= 20;
         end else begin
-            bird_pos_x <= 128;
-            bird_pos_y <= 100;
-            bird_angle <= -60;
+            bird_pos_x <= bird_fly_pos_x;
+            bird_pos_y <= bird_fly_pos_y;
+            bird_angle <= 0;
+        end
+    end
+end
+
+always @(posedge clk) begin
+    if (~rstn) begin
+        bird_fly_pos_x <= 0;
+        bird_fly_spd_x <= 0;
+    end else if (new_frame2) begin
+        if (game_ready) begin
+            bird_fly_pos_x <= 420;
+            bird_fly_spd_x <= 0;
+        end else if (game_fly) begin
+            if (button_flag) begin
+                bird_fly_spd_x <= 13;
+            end else begin
+                bird_fly_spd_x <= bird_fly_spd_x - gravity;
+            end
+
+            if (bird_fly_pos_x + bird_fly_spd_x > 728) begin
+                bird_fly_pos_x <= 728;
+            end else if (bird_fly_pos_x + bird_fly_spd_x < 104) begin
+                bird_fly_pos_x <= 104;
+                bird_fly_spd_x <= 0;
+            end else begin
+                bird_fly_pos_x <= bird_fly_pos_x + bird_fly_spd_x;
+            end
         end
     end
 end
