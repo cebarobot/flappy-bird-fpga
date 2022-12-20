@@ -80,7 +80,7 @@ wire game_ready;
 wire game_fly;
 wire game_over;
 
-wire dead = 0;
+wire bird_dead;
 
 always @(posedge clk) begin
     if (~rstn) begin
@@ -111,7 +111,7 @@ always @(*) begin
         end
     end else if (game_fly) begin
         // if (button_flag) begin
-        if (dead) begin
+        if (bird_dead) begin
             game_status_next[OVER] = 1;
         end else begin
             game_status_next[FLY] = 1;
@@ -198,6 +198,7 @@ always @(posedge clk) begin
             bird_fly_spd_x <= 0;
             bird_fly_angle <= 0;
         end else if (game_fly || game_over) begin
+        // end else if (game_fly) begin
             if (game_fly && button_flag) begin
                 bird_fly_spd_x <= 13;
             end else begin
@@ -275,5 +276,17 @@ always @(posedge clk) begin
         end
     end
 end
+
+wire bird_dead_x2;
+wire bird_dead_y2;
+wire bird_dead_ground;
+
+assign bird_dead_x2 = pipe2_pos_x - bird_pos_x > 220 || pipe2_pos_x - bird_pos_x < 80;
+assign bird_dead_y2 = pipe2_pos_y - bird_fly_pos_y <= 60 && pipe2_pos_y - bird_fly_pos_y >= -96;
+assign bird_dead_ground = bird_pos_x <= 104;
+
+assign bird_dead = 
+    (bird_dead_x2 && bird_dead_y2) || 
+    bird_dead_ground;
 
 endmodule
