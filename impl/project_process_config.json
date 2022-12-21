@@ -21,6 +21,7 @@
  "Generate_Post_PNR_Simulation_Model_File" : false,
  "Generate_Post_Place_File" : false,
  "Generate_SDF_File" : false,
+ "Generate_VHDL_Post_PNR_Simulation_Model_File" : false,
  "GwSyn_Loop_Limit" : 2000,
  "HOTBOOT" : false,
  "I2C" : false,
@@ -38,7 +39,7 @@
  "Number_of_Critical_Paths" : "",
  "Number_of_Start/End_Points" : "",
  "OUTPUT_BASE_NAME" : "flappy-bird-fpga",
- "POWER_ON_RESET" : false,
+ "POWER_ON_RESET_MONITOR" : true,
  "PRINT_BSRAM_VALUE" : true,
  "PROGRAM_DONE_BYPASS" : false,
  "Pipelining" : true,
@@ -56,6 +57,7 @@
  "Resolve_Mixed_Drivers" : false,
  "Resource_Sharing" : true,
  "Retiming" : false,
+ "Route_Maxfan" : "23",
  "Route_Option" : "0",
  "Run_Timing_Driven" : true,
  "SECURE_MODE" : false,
@@ -65,6 +67,7 @@
  "Show_All_Warnings" : false,
  "Synthesis On/Off Implemented as Translate On/Off" : false,
  "Synthesize_tool" : "GowinSyn",
+ "TclPre" : "",
  "TopModule" : "",
  "USERCODE" : "default",
  "Unused_Pin" : "As_input_tri_stated_with_pull_up",
@@ -76,5 +79,6 @@
  "WAKE_UP" : "0",
  "Write_Vendor_Constraint_File" : true,
  "dsp_balance" : false,
- "show_all_warnings" : false
+ "show_all_warnings" : false,
+ "turn_off_bg" : false
 }

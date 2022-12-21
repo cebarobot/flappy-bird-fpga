@@ -33,6 +33,12 @@ wire pipe_pe;
 wire [15:0] pipe_color;
 wire bird_pe;
 wire [15:0] bird_color;
+wire logo_pe;
+wire [15:0] logo_color;
+wire ready_pe;
+wire [15:0] ready_color;
+wire over_pe;
+wire [15:0] over_color;
 
 wire [15:0] stage_shift;
 
@@ -47,6 +53,10 @@ wire signed [15:0] bird_pos_x;
 wire signed [15:0] bird_pos_y;
 wire signed [ 7:0] bird_angle;
 wire [1:0] bird_status;
+
+wire logo_enable;
+wire ready_enable;
+wire over_enable;
 
 // TODO: generate pixel clk
 // for simulation
@@ -78,7 +88,10 @@ game u_game(
     .pipe3_pos_y    (pipe3_pos_y),
     .bird_pos_x     (bird_pos_x),
     .bird_pos_y     (bird_pos_y),
-    .bird_angle     (bird_angle)
+    .bird_angle     (bird_angle),
+    .logo_enable    (logo_enable),
+    .ready_enable   (ready_enable),
+    .over_enable    (over_enable)
 );
 
 // scanning logic
@@ -142,7 +155,70 @@ dis_bird u_dis_bird(
     .paint_color    (bird_color)
 );
 
+dis_sprite #(
+    .sprite_height  (22),
+    .sprite_width   (96),
+    .bitmap_depth   (2112),
+    .palette_depth  (5),
+    .bitmap_file    ("images/logo.mem"),
+    .palette_file   ("images/logo_palette.mem")
+) u_dis_logo (
+    .clk            (pix_clk),
+    .rstn           (rstn),
+    .enable         (logo_enable),
+    .pos_x          (570),
+    .pos_y          (48),
+    .bitmap_offset  (0),
+    .paint_x        (paint_x),
+    .paint_y        (paint_y),
+    .paint_enable   (logo_pe),
+    .paint_color    (logo_color)
+);
+
+dis_sprite #(
+    .sprite_height  (22),
+    .sprite_width   (87),
+    .bitmap_depth   (1914),
+    .palette_depth  (4),
+    .bitmap_file    ("images/ready.mem"),
+    .palette_file   ("images/ready_palette.mem")
+) u_dis_ready (
+    .clk            (pix_clk),
+    .rstn           (rstn),
+    .enable         (ready_enable),
+    .pos_x          (540),
+    .pos_y          (66),
+    .bitmap_offset  (0),
+    .paint_x        (paint_x),
+    .paint_y        (paint_y),
+    .paint_enable   (ready_pe),
+    .paint_color    (ready_color)
+);
+
+dis_sprite #(
+    .sprite_height  (19),
+    .sprite_width   (94),
+    .bitmap_depth   (1786),
+    .palette_depth  (4),
+    .bitmap_file    ("images/over.mem"),
+    .palette_file   ("images/over_palette.mem")
+) u_dis_over (
+    .clk            (pix_clk),
+    .rstn           (rstn),
+    .enable         (over_enable),
+    .pos_x          (540),
+    .pos_y          (52),
+    .bitmap_offset  (0),
+    .paint_x        (paint_x),
+    .paint_y        (paint_y),
+    .paint_enable   (over_pe),
+    .paint_color    (over_color)
+);
+
 assign raw_color =
+    (logo_pe)?  logo_color:
+    (ready_pe)? ready_color:
+    (over_pe)?  over_color:
     (bird_pe)?  bird_color:
     (pipe_pe)?  pipe_color:
     (stage_pe)? stage_color:

@@ -18,7 +18,11 @@ module game(
 
     output reg signed [15:0] bird_pos_x,
     output reg signed [15:0] bird_pos_y,
-    output reg signed [ 7:0] bird_angle
+    output reg signed [ 7:0] bird_angle,
+
+    output reg logo_enable,
+    output reg ready_enable,
+    output reg over_enable
 );
 
 always @(*) begin
@@ -189,8 +193,8 @@ always @(posedge clk) begin
         bird_angle <= 0;
     end else if (new_frame2) begin
         if (game_start) begin
-            bird_pos_x <= 580;
-            bird_pos_y <= 380;
+            bird_pos_x <= 420;
+            bird_pos_y <= 206;
             bird_angle <= 0;
         end else if (game_ready) begin
             bird_pos_x <= 420;
@@ -316,5 +320,17 @@ assign bird_dead_ground = bird_pos_x <= 104;
 assign bird_dead = 
     (bird_dead_x2 && bird_dead_y2) || 
     bird_dead_ground;
+
+always @(posedge clk) begin
+    if (~rstn) begin
+        logo_enable <= 0;
+        ready_enable <= 0;
+        over_enable <= 0;
+    end else if (new_frame2) begin
+        logo_enable <= game_start;
+        ready_enable <= game_ready;
+        over_enable <= game_over;
+    end
+end
 
 endmodule
