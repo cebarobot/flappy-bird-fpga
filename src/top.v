@@ -22,6 +22,8 @@ wire raw_hsync;
 wire raw_vsync;
 wire raw_de;
 wire [15:0] raw_color;
+wire title_pe;
+wire [15:0] title_color;
 
 wire new_line;
 wire new_frame;
@@ -39,6 +41,8 @@ wire ready_pe;
 wire [15:0] ready_color;
 wire over_pe;
 wire [15:0] over_color;
+wire hint_pe;
+wire [15:0] hint_color;
 
 wire [15:0] stage_shift;
 
@@ -194,6 +198,25 @@ dis_sprite #(
     .paint_enable   (ready_pe),
     .paint_color    (ready_color)
 );
+dis_sprite #(
+    .sprite_height  (49),
+    .sprite_width   (39),
+    .bitmap_depth   (1911),
+    .palette_depth  (7),
+    .bitmap_file    ("images/hint.mem"),
+    .palette_file   ("images/hint_palette.mem")
+) u_dis_hint (
+    .clk            (pix_clk),
+    .rstn           (rstn),
+    .enable         (ready_enable),
+    .pos_x          (260),
+    .pos_y          (198),
+    .bitmap_offset  (0),
+    .paint_x        (paint_x),
+    .paint_y        (paint_y),
+    .paint_enable   (hint_pe),
+    .paint_color    (hint_color)
+);
 
 dis_sprite #(
     .sprite_height  (19),
@@ -215,10 +238,15 @@ dis_sprite #(
     .paint_color    (over_color)
 );
 
+assign title_pe = logo_pe || ready_pe || hint_pe || over_pe;
+assign title_color = 
+    ({16{logo_pe}} & logo_color) |
+    ({16{ready_pe}} & ready_color) |
+    ({16{hint_pe}} & hint_color) |
+    ({16{over_pe}} & over_color);
+
 assign raw_color =
-    (logo_pe)?  logo_color:
-    (ready_pe)? ready_color:
-    (over_pe)?  over_color:
+    (title_pe)? title_color:
     (bird_pe)?  bird_color:
     (pipe_pe)?  pipe_color:
     (stage_pe)? stage_color:
