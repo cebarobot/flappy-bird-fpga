@@ -28,7 +28,10 @@ module game(
 
     output reg logo_enable,
     output reg ready_enable,
-    output reg over_enable
+    output reg over_enable,
+
+    output reg medal_enable,
+    output reg signed [15:0] medal_offset
 );
 
 always @(*) begin
@@ -376,6 +379,32 @@ always @(posedge clk) begin
         logo_enable <= game_start;
         ready_enable <= game_ready;
         over_enable <= game_over;
+    end
+end
+
+always @(posedge clk) begin
+    if (~rstn) begin
+        medal_enable <= 0;
+        medal_offset <= 0;
+    end else if (new_frame2) begin
+        if (game_over) begin
+            if (number_num1 == 0) begin
+                medal_enable <= 0;
+                medal_offset <= 0;
+            end else if (number_num1 == 1) begin
+                medal_enable <= 1;
+                medal_offset <= 0;
+            end else if (number_num1 == 2) begin
+                medal_enable <= 1;
+                medal_offset <= 22 * 22;
+            end else begin
+                medal_enable <= 1;
+                medal_offset <= 2 * 22 * 22;
+            end
+        end else begin
+            medal_enable <= 0;
+            medal_offset <= 0;
+        end
     end
 end
 

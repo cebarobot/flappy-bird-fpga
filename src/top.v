@@ -47,6 +47,8 @@ wire hint_pe;
 wire [15:0] hint_color;
 wire score_board_pe;
 wire [15:0] score_board_color;
+wire medal_pe;
+wire [15:0] medal_color;
 
 wire [15:0] stage_shift;
 
@@ -67,6 +69,9 @@ wire signed [15:0] number_pos_x;
 wire signed [15:0] number_pos_y;
 wire [3:0] number_num0;
 wire [3:0] number_num1;
+
+wire medal_enable;
+wire signed [15:0] medal_offset;
 
 wire logo_enable;
 wire ready_enable;
@@ -110,7 +115,9 @@ game u_game(
     .number_num1    (number_num1),
     .logo_enable    (logo_enable),
     .ready_enable   (ready_enable),
-    .over_enable    (over_enable)
+    .over_enable    (over_enable),
+    .medal_enable   (medal_enable),
+    .medal_offset   (medal_offset)
 );
 
 // scanning logic
@@ -287,6 +294,26 @@ dis_sprite #(
     .paint_color    (score_board_color)
 );
 
+dis_sprite #(
+    .sprite_height  (22),
+    .sprite_width   (22),
+    .bitmap_depth   (1452),
+    .palette_depth  (14),
+    .bitmap_file    ("images/medal.mem"),
+    .palette_file   ("images/medal_palette.mem")
+) u_dis_medal (
+    .clk            (pix_clk),
+    .rstn           (rstn),
+    .enable         (medal_enable),
+    .pos_x          (340),
+    .pos_y          (92),
+    .bitmap_offset  (medal_offset),
+    .paint_x        (paint_x),
+    .paint_y        (paint_y),
+    .paint_enable   (medal_pe),
+    .paint_color    (medal_color)
+);
+
 assign title_pe = logo_pe || ready_pe || hint_pe || over_pe || score_board_pe;
 assign title_color = 
     ({16{score_board_pe}} & score_board_color) |
@@ -296,6 +323,7 @@ assign title_color =
     ({16{over_pe}} & over_color);
 
 assign raw_color =
+    (medal_pe)? medal_color:
     (number_pe)? number_color:
     (title_pe)? title_color:
     (bird_pe)?  bird_color:
