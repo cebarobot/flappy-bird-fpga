@@ -20,6 +20,12 @@ module game(
     output reg signed [15:0] bird_pos_y,
     output reg signed [ 7:0] bird_angle,
 
+    output reg number_enable,
+    output reg signed [15:0] number_pos_x,
+    output reg signed [15:0] number_pos_y,
+    output reg [3:0] number_num0,
+    output reg [3:0] number_num1,
+
     output reg logo_enable,
     output reg ready_enable,
     output reg over_enable
@@ -314,12 +320,52 @@ wire bird_dead_y2;
 wire bird_dead_ground;
 
 assign bird_dead_x2 = pipe2_pos_x - bird_pos_x > 220 || pipe2_pos_x - bird_pos_x < 80;
-assign bird_dead_y2 = pipe2_pos_y - bird_fly_pos_y <= 60 && pipe2_pos_y - bird_fly_pos_y >= -96;
+assign bird_dead_y2 = pipe2_pos_y - bird_fly_pos_y <= 55 && pipe2_pos_y - bird_fly_pos_y >= -96;
 assign bird_dead_ground = bird_pos_x <= 104;
 
 assign bird_dead = 
     (bird_dead_x2 && bird_dead_y2) || 
-    bird_dead_ground;
+    bird_dead_ground ||
+    (number_num0 == 9 && number_num1 == 9);
+
+wire score_add;
+assign score_add = pipe2_pos_y - bird_fly_pos_y + 40 >= 0 && pipe2_pos_y - bird_fly_pos_y + 40 < 5;
+
+always @(posedge clk) begin
+    if (~rstn) begin
+        number_enable <= 0;
+        number_pos_x <= 0;
+        number_pos_y <= 0;
+        number_num0 <= 0;
+        number_num1 <= 0;
+    end else if (new_frame2) begin
+        if (game_ready) begin
+            number_enable <= 1;
+            number_pos_x <= 720;
+            number_pos_y <= 210;
+            number_num0 <= 0;
+            number_num1 <= 0;
+        end else if (game_fly) begin
+            number_enable <= 1;
+            number_pos_x <= 720;
+            number_pos_y <= 210;
+            if (score_add) begin
+                if (number_num0 == 9) begin
+                    number_num0 <= 0;
+                    number_num1 <= number_num1 + 1;
+                end else begin
+                    number_num0 <= number_num0 + 1;
+                end
+            end
+        end else if (game_over) begin
+            number_enable <= 1;
+            number_pos_x <= 400;
+            number_pos_y <= 250;
+        end else begin
+            number_enable <= 0;
+        end
+    end
+end
 
 always @(posedge clk) begin
     if (~rstn) begin

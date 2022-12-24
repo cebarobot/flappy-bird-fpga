@@ -35,6 +35,8 @@ wire pipe_pe;
 wire [15:0] pipe_color;
 wire bird_pe;
 wire [15:0] bird_color;
+wire number_pe;
+wire [15:0] number_color;
 wire logo_pe;
 wire [15:0] logo_color;
 wire ready_pe;
@@ -57,6 +59,12 @@ wire signed [15:0] bird_pos_x;
 wire signed [15:0] bird_pos_y;
 wire signed [ 7:0] bird_angle;
 wire [1:0] bird_status;
+
+wire number_enable;
+wire signed [15:0] number_pos_x;
+wire signed [15:0] number_pos_y;
+wire [3:0] number_num0;
+wire [3:0] number_num1;
 
 wire logo_enable;
 wire ready_enable;
@@ -93,6 +101,11 @@ game u_game(
     .bird_pos_x     (bird_pos_x),
     .bird_pos_y     (bird_pos_y),
     .bird_angle     (bird_angle),
+    .number_enable  (number_enable),
+    .number_pos_x   (number_pos_x),
+    .number_pos_y   (number_pos_y),
+    .number_num0    (number_num0),
+    .number_num1    (number_num1),
     .logo_enable    (logo_enable),
     .ready_enable   (ready_enable),
     .over_enable    (over_enable)
@@ -157,6 +170,20 @@ dis_bird u_dis_bird(
     .paint_y        (paint_y),
     .paint_enable   (bird_pe),
     .paint_color    (bird_color)
+);
+
+dis_number u_dis_number(
+    .clk            (pix_clk),
+    .rstn           (rstn),
+    .enable         (number_enable),
+    .pos_x          (number_pos_x),
+    .pos_y          (number_pos_y),
+    .num0           (number_num0),
+    .num1           (number_num1),
+    .paint_x        (paint_x),
+    .paint_y        (paint_y),
+    .paint_enable   (number_pe),
+    .paint_color    (number_color)
 );
 
 dis_sprite #(
@@ -246,6 +273,7 @@ assign title_color =
     ({16{over_pe}} & over_color);
 
 assign raw_color =
+    (number_pe)? number_color:
     (title_pe)? title_color:
     (bird_pe)?  bird_color:
     (pipe_pe)?  pipe_color:

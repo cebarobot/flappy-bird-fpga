@@ -10,6 +10,7 @@
         <File path="src/debouncer.v" type="file.verilog" enable="1"/>
         <File path="src/dis_background.v" type="file.verilog" enable="1"/>
         <File path="src/dis_bird.v" type="file.verilog" enable="1"/>
+        <File path="src/dis_number.v" type="file.verilog" enable="1"/>
         <File path="src/dis_pipe.v" type="file.verilog" enable="1"/>
         <File path="src/dis_sprite.v" type="file.verilog" enable="1"/>
         <File path="src/dis_stage.v" type="file.verilog" enable="1"/>
