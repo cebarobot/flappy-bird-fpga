@@ -360,7 +360,7 @@ always @(posedge clk) begin
         end else if (game_over) begin
             number_enable <= 1;
             number_pos_x <= 400;
-            number_pos_y <= 250;
+            number_pos_y <= 330;
         end else begin
             number_enable <= 0;
         end

@@ -45,6 +45,8 @@ wire over_pe;
 wire [15:0] over_color;
 wire hint_pe;
 wire [15:0] hint_color;
+wire score_board_pe;
+wire [15:0] score_board_color;
 
 wire [15:0] stage_shift;
 
@@ -265,8 +267,29 @@ dis_sprite #(
     .paint_color    (over_color)
 );
 
-assign title_pe = logo_pe || ready_pe || hint_pe || over_pe;
+dis_sprite #(
+    .sprite_height  (56),
+    .sprite_width   (100),
+    .bitmap_depth   (5600),
+    .palette_depth  (6),
+    .bitmap_file    ("images/score_board.mem"),
+    .palette_file   ("images/score_board_palette.mem")
+) u_dis_score_board (
+    .clk            (pix_clk),
+    .rstn           (rstn),
+    .enable         (over_enable),
+    .pos_x          (288),
+    .pos_y          (40),
+    .bitmap_offset  (0),
+    .paint_x        (paint_x),
+    .paint_y        (paint_y),
+    .paint_enable   (score_board_pe),
+    .paint_color    (score_board_color)
+);
+
+assign title_pe = logo_pe || ready_pe || hint_pe || over_pe || score_board_pe;
 assign title_color = 
+    ({16{score_board_pe}} & score_board_color) |
     ({16{logo_pe}} & logo_color) |
     ({16{ready_pe}} & ready_color) |
     ({16{hint_pe}} & hint_color) |
