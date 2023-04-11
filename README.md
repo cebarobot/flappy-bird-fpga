@@ -32,6 +32,9 @@ Open `flappy-bird-fpga.gprj` file in Gowin IDE and run all processes. Using Gowi
 
 用高云云源软件打开工程文件 `flappy-bird-fpga.gprj`，运行所有步骤并使用高云下载器烧录比特流文件到开发板。
 
+## Gallery 画廊
+![Demo](demo.jpg)
+
 ## References 参考资料
 * [Exploring FPGA Graphics - Project F: FPGA Dev](https://projectf.io/posts/fpga-graphics/)
 * [Beginning Game Programming v2.0 - Lazy Foo' Productions](https://lazyfoo.net/tutorials/SDL/)
